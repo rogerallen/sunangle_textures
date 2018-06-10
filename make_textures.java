@@ -1,13 +1,11 @@
 
-/*
- * make_textures.java -- Java to the rescue!
- * create the textures that we use in sunangle.py
- * by Roger Allen (rallen@gmail.com)
-
-javac make_textures.java && java make_textures  && open clock.png compass.png
-
- *
- */
+//
+// make_textures.java 
+// create the textures that we use in sunangle program
+// by Roger Allen (rallen@gmail.com)
+//
+// TODO clear the outer extra hatches from line endcaps or figure out how to remove endcaps.
+// TODO alignment is not perfect.
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -47,8 +45,8 @@ class make_textures {
         }
     }
 
-    static void draw_clock(Graphics2D g) {
-        System.out.println("draw_clock()");
+    static void draw_clock(Graphics2D g, boolean forewards) {
+        // System.out.println("draw_clock()");
         g.setFont(new Font("Serif", Font.PLAIN, 64));
         g.translate(wh2, wh2);
 
@@ -80,6 +78,9 @@ class make_textures {
         // numbers
         for (int i = 0; i < 24; i++) {
             double x0 = (wh2 - 3 * insetw) * Math.sin((i / (double) 24) * 2.0 * Math.PI);
+            if (!forewards) {
+                x0 = -x0;
+            }
             double y0 = (wh2 - 3 * insetw) * Math.cos((i / (double) 24) * 2.0 * Math.PI);
             draw_centered_text(g, "" + ((24 - i) % 24), x0, y0);
         }
@@ -94,12 +95,10 @@ class make_textures {
         g.fill(back2);
         g.setComposite(curComposite);
 
-        // FIXME clear the outer extra hatches from line endcaps or figure out
-        // how to remove endcaps.
     }
 
-    static void draw_compass(Graphics2D g) {
-        System.out.println("draw_compass()");
+    static void draw_compass(Graphics2D g, boolean forewards) {
+        // System.out.println("draw_compass()");
         g.setFont(new Font("Serif", Font.PLAIN, 24));
         g.translate(wh2, wh2);
 
@@ -118,11 +117,14 @@ class make_textures {
         Ellipse2D inset = new Ellipse2D.Double(-wh2 + insetw, -wh2 + insetw, wh - 2 * insetw, wh - 2 * insetw);
         g.setStroke(new BasicStroke(2F));
         g.draw(inset);
-        Ellipse2D inset2 = new Ellipse2D.Double(-3 * wh8, -3 * wh8, 1.5 * wh2, 1.5 * wh2);
-        g.setColor(Color.LIGHT_GRAY);
-        g.fill(inset2);
-        g.setColor(Color.BLACK);
-        g.draw(inset2);
+        boolean do_inset2 = false;
+        if (do_inset2) {
+            Ellipse2D inset2 = new Ellipse2D.Double(-3 * wh8, -3 * wh8, 1.5 * wh2, 1.5 * wh2);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fill(inset2);
+            g.setColor(Color.BLACK);
+            g.draw(inset2);
+        }
         g.setStroke(new BasicStroke(4));
         draw_hatches(g, 36);
         g.setStroke(new BasicStroke(1.F));
@@ -133,6 +135,9 @@ class make_textures {
         // numbers
         for (int i = 0; i < 36; i++) {
             double x0 = (wh2 - 2 * insetw) * Math.sin((i / (double) 36) * 2.0 * Math.PI);
+            if (!forewards) {
+                x0 = -x0;
+            }
             double y0 = (wh2 - 2 * insetw) * Math.cos((i / (double) 36) * 2.0 * Math.PI);
             draw_centered_text(g, "" + 10 * ((36 - i + 18) % 36), x0, y0);
         }
@@ -158,20 +163,28 @@ class make_textures {
         double wht = wh4 - 2 * insetw;
         draw_centered_text(g, "S", 0, wht);
         draw_centered_text(g, "N", 0, -wht);
-        draw_centered_text(g, "E", wht, 0);
-        draw_centered_text(g, "W", -wht, 0);
-
+        if (forewards) {
+            draw_centered_text(g, "E", wht, 0);
+            draw_centered_text(g, "W", -wht, 0);
+        } else {
+            draw_centered_text(g, "W", wht, 0);
+            draw_centered_text(g, "E", -wht, 0);
+        }
     }
 
     static void make_image(String name) {
-        System.out.println("make_image: -" + name + "-");
+        System.out.println("make_image: " + name + ".png");
         BufferedImage theImage = new BufferedImage((int) wh, (int) wh, BufferedImage.TYPE_INT_ARGB);
         Graphics2D theGraphics = (Graphics2D) theImage.getGraphics();
         theGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (name.equals(new String("clock"))) {
-            draw_clock(theGraphics);
+            draw_clock(theGraphics, true);
+        } else if (name.equals(new String("clock_back"))) {
+            draw_clock(theGraphics, false);
         } else if (name.equals(new String("compass"))) {
-            draw_compass(theGraphics);
+            draw_compass(theGraphics, true);
+        } else if (name.equals(new String("compass_back"))) {
+            draw_compass(theGraphics, false);
         }
         theGraphics.dispose();
         File theFile = new File(name + ".png");
@@ -180,7 +193,7 @@ class make_textures {
         } catch (IOException e) {
             System.out.println("ERROR: Caught Exception!");
         }
-        System.out.println("done");
+        // System.out.println("done");
     }
 
     public static void main(String args[]) {
@@ -188,9 +201,6 @@ class make_textures {
             for (int i = 0; i < args.length; i++) {
                 make_image(args[i]);
             }
-        } else {
-            make_image("clock");
-            make_image("compass");
         }
     }
 }
