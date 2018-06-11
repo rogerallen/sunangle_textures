@@ -1,11 +1,9 @@
-
 //
 // make_textures.java 
 // create the textures that we use in sunangle program
 // by Roger Allen (rallen@gmail.com)
 //
 // TODO clear the outer extra hatches from line endcaps or figure out how to remove endcaps.
-// TODO alignment is not perfect.
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -56,9 +54,7 @@ class make_textures {
         g.fill(back);
         g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(4));
-        double epsilon = 1020. / 1024;
-        double epsilon2 = (1. + epsilon) / 2.;
-        Ellipse2D backOutline = new Ellipse2D.Double(-wh2 * epsilon2, -wh2 * epsilon2, wh * epsilon, wh * epsilon);
+        Ellipse2D backOutline = new Ellipse2D.Double(-wh2, -wh2, wh , wh);
         g.draw(backOutline);
 
         // outer hatches
@@ -108,9 +104,7 @@ class make_textures {
         g.fill(back);
         g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(4));
-        double epsilon = 1020. / 1024;
-        double epsilon2 = (1. + epsilon) / 2.;
-        Ellipse2D backOutline = new Ellipse2D.Double(-wh2 * epsilon2, -wh2 * epsilon2, wh * epsilon, wh * epsilon);
+        Ellipse2D backOutline = new Ellipse2D.Double(-wh2, -wh2, wh, wh);
         g.draw(backOutline);
 
         // hatches around outside
@@ -170,10 +164,11 @@ class make_textures {
             draw_centered_text(g, "W", wht, 0);
             draw_centered_text(g, "E", -wht, 0);
         }
+        
     }
 
     static void make_image(String name) {
-        System.out.println("make_image: " + name + ".png");
+        //System.out.println("make_image: " + name + ".png");
         BufferedImage theImage = new BufferedImage((int) wh, (int) wh, BufferedImage.TYPE_INT_ARGB);
         Graphics2D theGraphics = (Graphics2D) theImage.getGraphics();
         theGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
