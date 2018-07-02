@@ -1,5 +1,5 @@
 //
-// make_textures.java 
+// make_textures.java
 // create the textures that we use in sunangle program
 // by Roger Allen (rallen@gmail.com)
 //
@@ -164,7 +164,69 @@ class make_textures {
             draw_centered_text(g, "W", wht, 0);
             draw_centered_text(g, "E", -wht, 0);
         }
-        
+
+    }
+
+    static void draw_dude(Graphics2D g) {
+        // System.out.println("draw_dude()");
+        double du = wh/6;
+        double du2 = du/2;
+        float sw = 12;
+
+        // head
+        Ellipse2D head = new Ellipse2D.Double(wh2-du2, du-du2, du, du);
+        g.setColor(Color.WHITE);
+        g.fill(head);
+        g.setColor(Color.BLACK);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(head);
+
+        // torso
+        Line2D torso = new Line2D.Double(wh2, du+du2, wh2, wh2+du2);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(torso);
+
+        // arms
+        Line2D arm1 = new Line2D.Double(wh2, 2*du, 2*du, wh2);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(arm1);
+        Line2D arm2 = new Line2D.Double(wh2, 2*du, 4*du, wh2);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(arm2);
+
+        // legs
+        Line2D leg1 = new Line2D.Double(wh2, wh2+du2, 2*du, 5*du);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(leg1);
+        Line2D leg2 = new Line2D.Double(wh2, wh2+du2, 4*du, 5*du);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(leg2);
+
+    }
+
+    static void draw_sun(Graphics2D g) {
+        float sw = 12;
+        double wh3 = wh/3;
+        double wh6 = wh/6;
+
+        // head
+        Ellipse2D head = new Ellipse2D.Double(wh2-wh6, wh2-wh6, wh3, wh3);
+        g.setColor(Color.WHITE);
+        g.fill(head);
+        g.setColor(Color.BLACK);
+        g.setStroke(new BasicStroke(sw));
+        g.draw(head);
+
+        int n = 12;
+        g.translate(wh2, wh2);
+        for (int i = 0; i < n; i++) {
+            double x0 = (1.5*wh6) * Math.sin((i / (double) n) * 2.0 * Math.PI);
+            double y0 = (1.5*wh6) * Math.cos((i / (double) n) * 2.0 * Math.PI);
+            double x1 = (2*wh6) * Math.sin((i / (double) n) * 2.0 * Math.PI);
+            double y1 = (2*wh6) * Math.cos((i / (double) n) * 2.0 * Math.PI);
+            g.draw(new Line2D.Double(x0, y0, x1, y1));
+        }
+
     }
 
     static void make_image(String name) {
@@ -180,6 +242,10 @@ class make_textures {
             draw_compass(theGraphics, true);
         } else if (name.equals(new String("compass_back"))) {
             draw_compass(theGraphics, false);
+        } else if (name.equals(new String("dude"))) {
+            draw_dude(theGraphics);
+        } else if (name.equals(new String("sun"))) {
+            draw_sun(theGraphics);
         }
         theGraphics.dispose();
         File theFile = new File(name + ".png");
